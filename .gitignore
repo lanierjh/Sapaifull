@@ -4,7 +4,6 @@
 *.zip
 *models/
 *best_models/
-*model_sap_gym*
 *history/
 .idea/
 .coverage
