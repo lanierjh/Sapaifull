@@ -90,6 +90,9 @@ def run(ret):
     env = SuperAutoPetsEnv(opponent_generator, valid_actions_only=True)
     obs = env.reset()
 
+    # store the models actions in an array
+    actions_for_chat = []
+
     with pynput.keyboard.Listener(on_press=kill_process) as listener:
         while not stop_program:
             time_pause(0.5)
@@ -123,6 +126,14 @@ def run(ret):
             action = int(action) 
             
             time_pause(1.0)  # 0.5
+
+            # store action logs in array
+            actions_for_chat.append(f"GAME ENGINE [self.run]:" +
+                                  " Best Action = {} {}".format(action, get_action_name(action)))
+            actions_for_chat.append(f"GAME ENGINE [self.run]: Instruction given " +
+                                  "by the model = {}".format(s[action][1:]))
+            
+
             log.info("GAME ENGINE [self.run]:" +
                                   " Current Team and Shop \n{}".format(s[action][0]))
             log.info("GAME ENGINE [self.run]:" +
@@ -132,6 +143,7 @@ def run(ret):
             # log.info("GAME ENGINE [self.en")
             if env._is_valid_action(action):
                 log.info("GAME ENGINE [self.run]: Action is valid")
+                actions_for_chat.append(f"GAME ENGINE [self.run]: Action is valid")
                 if get_action_name(action) == 'buy_food':
                     num_pets = 0
                     num_food = 0
@@ -140,9 +152,13 @@ def run(ret):
                             num_pets += 1
                         if shop_slot.slot_type == "food":
                             num_food += 1
+                    
                     log.info("GAME ENGINE [self.run]:" + " Calls {}".format(get_action_name(action)) +
                              " with parameters {}, {}".format(s[action][1:], num_pets - num_food % 2))
-                    action_dict[get_action_name(action)](s[action][1:], num_pets - num_food % 2)
+                    actions_for_chat.append(f"GAME ENGINE [self.run]:" + " Calls {}".format(get_action_name(action)) +
+                             " with parameters {}, {}".format(s[action][1:], num_pets - num_food % 2))
+                    
+                    # action_dict[get_action_name(action)](s[action][1:], num_pets - num_food % 2)
                 elif get_action_name(action) == 'buy_team_food':  # same behaviour as for buy_food for single animal
                     num_pets = 0
                     num_food = 0
@@ -151,50 +167,65 @@ def run(ret):
                             num_pets += 1
                         if shop_slot.slot_type == "food":
                             num_food += 1
+
                     log.info("GAME ENGINE [self.run]:" + " Calls {}".format(get_action_name(action)) +
                              " with parameters {}, {}".format(s[action][1:], num_pets - num_food % 2))
-                    action_dict[get_action_name(action)](s[action][1:], num_pets - num_food % 2)
+                    actions_for_chat.append(f"GAME ENGINE [self.run]:" + " Calls {}".format(get_action_name(action)) +
+                             " with parameters {}, {}".format(s[action][1:], num_pets - num_food % 2))
+
+                    # action_dict[get_action_name(action)](s[action][1:], num_pets - num_food % 2)
                 else:
                     if get_action_name(action) == 'roll':
+                        
                         log.info("GAME ENGINE [self.run]: " +
                                  "Calls {}".format(get_action_name(action)) + " with no parameters")
-                        action_dict[get_action_name(action)]()
+                        actions_for_chat.append(f"GAME ENGINE [self.run]: " +
+                                 "Calls {}".format(get_action_name(action)) + " with no parameters")
+
+                        # action_dict[get_action_name(action)]()
                     else:
+
                         log.info("GAME ENGINE [self.run]: " + "Calls {}".format(get_action_name(action)) +
                                  " with parameters {}".format(s[action][1:]))
-                        action_dict[get_action_name(action)](s[action][1:])
+                        actions_for_chat.append(f"GAME ENGINE [self.run]: " + "Calls {}".format(get_action_name(action)) +
+                                 " with parameters {}".format(s[action][1:]))
+                        
+                        # action_dict[get_action_name(action)](s[action][1:])
             log.info("GAME ENGINE [self.run]: Implements the action" +
                      " in the Environment\n\n\n")
             obs, reward, done, info = env.step(action)
             if get_action_name(action) == 'end_turn':
                 # time_pause(1.5)
                 # end turned press, start clicking until end turn button shows again (game is over)
-                time_pause(3.0)
-                battle_finished = False
-                while not battle_finished:
+                # time_pause(3.0)
+                # battle_finished = False
+                # while not battle_finished:
                     # click event
-                    log.info("TRIVIAL MOUSE ACTION [self.run]: clicking to skip the battle")
-                    gui.click(1780 * dimensions_scale[0], 200 * dimensions_scale[1])  # x, y
+                    # log.info("TRIVIAL MOUSE ACTION [self.run]: clicking to skip the battle")
+                    # gui.click(1780 * dimensions_scale[0], 200 * dimensions_scale[1])  # x, y
 
                     # check if battle is done
-                    if find_paw():
-                        log.info("GAME ENGINE [self.run]: Battle is over")
-                        battle_finished = True
-                    else:
-                        # check if game is over
-                        if find_arena():
-                            time_pause(0.2)
-                            log.info("GAME ENGINE [self.run]: Game is over! Start new game")
-                            gui.click(600 * dimensions_scale[0], 400 * dimensions_scale[1])  # x, y
+                    # if find_paw():
+                    #     log.info("GAME ENGINE [self.run]: Battle is over")
+                    #     battle_finished = True
+                    # else:
+                    #     # check if game is over
+                    #     if find_arena():
+                    #         time_pause(0.2)
+                    #         log.info("GAME ENGINE [self.run]: Game is over! Start new game")
+                    #         gui.click(600 * dimensions_scale[0], 400 * dimensions_scale[1])  # x, y
 
-                gui.click(1780 * dimensions_scale[0], 200 * dimensions_scale[1])  # x, y
+                # gui.click(1780 * dimensions_scale[0], 200 * dimensions_scale[1])  # x, y
                 
                # waits for the turn 3 event, clicking through it
-                time.sleep(2)
+                # time.sleep(2)
            
-                gui.click(1780 * dimensions_scale[0], 200 * dimensions_scale[1])  # x, y
+                # gui.click(1780 * dimensions_scale[0], 200 * dimensions_scale[1])  # x, y
 
                 log.info("Ending turn")
+
+                formatted_actions = "\n".join(actions_for_chat)
+                print(formatted_actions)
 
         listener.join()
 
