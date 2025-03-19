@@ -91,30 +91,30 @@ def get_screen_scale():
     return np.array(curr_geometry) / np.array(template_resolution)
 
 
-# def get_curr_screen_geometry():
-#     """
-#     Workaround to get the size of the current screen in a multi-screen setup
-#     Note that this method captures the current scaled resolution and not necessary the true resolution
-#     """
-#     root = tk.Tk()
-#     root.update_idletasks()
-#     root.attributes('-fullscreen', True)
-#     root.state('iconic')
-#     geometry = root.winfo_geometry()
-#     root.destroy()
-#     return np.array(geometry.split("+")[0].split("x")).astype(int)
-
 def get_curr_screen_geometry():
-   """
-   Get the size of the current screen without creating a fullscreen window
-   Note that this method captures the current scaled resolution
-   """
-   root = tk.Tk()
-   root.withdraw()  # Hide the window
-   screen_width = root.winfo_screenwidth()
-   screen_height = root.winfo_screenheight()
-   root.destroy()
-   return np.array([screen_width, screen_height])
+    """
+    Workaround to get the size of the current screen in a multi-screen setup
+    Note that this method captures the current scaled resolution and not necessary the true resolution
+    """
+    root = tk.Tk()
+    root.update_idletasks()
+    root.attributes('-fullscreen', True)
+    root.state('iconic')
+    geometry = root.winfo_geometry()
+    root.destroy()
+    return np.array(geometry.split("+")[0].split("x")).astype(int)
+
+# def get_curr_screen_geometry():
+#    """
+#    Get the size of the current screen without creating a fullscreen window
+#    Note that this method captures the current scaled resolution
+#    """
+#    root = tk.Tk()
+#    root.withdraw()  # Hide the window
+#    screen_width = root.winfo_screenwidth()
+#    screen_height = root.winfo_screenheight()
+#    root.destroy()
+#    return np.array([screen_width, screen_height])
 
 
 def move_drag_tween(n):
