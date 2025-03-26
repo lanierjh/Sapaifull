@@ -1,0 +1,13 @@
+{
+    "manifest_version": 3,
+    "name": "SAPAI Chat Display",
+    "version": "1.0",
+    "description": "Displays LLM responses in a chat-like interface",
+    "action": {
+      "default_popup": "index.html"
+    },
+    "permissions": ["storage", "activeTab"],
+    "background": {
+      "service_worker": "background/background.js"
+    }
+  }
