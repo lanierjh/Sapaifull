@@ -93,16 +93,36 @@ def get_screen_scale():
 
 def get_curr_screen_geometry():
     """
-    Workaround to get the size of the current screen in a multi-screen setup
-    Note that this method captures the current scaled resolution and not necessary the true resolution
+    Get the size of the current screen without creating a fullscreen window
+    Note that this method captures the current scaled resolution
     """
     root = tk.Tk()
-    root.update_idletasks()
-    root.attributes('-fullscreen', True)
-    root.state('iconic')
-    geometry = root.winfo_geometry()
+    root.withdraw()  # Hide the window
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
     root.destroy()
-    return np.array(geometry.split("+")[0].split("x")).astype(int)
+    return np.array([screen_width, screen_height])
+
+
+# Global variable to store window offset (top-left coordinates)
+window_offset = (0, 0)
+
+def set_window_offset(x, y):
+    """
+    Set the top-left coordinates of the game window
+    Args:
+        x: x-coordinate of the top-left corner of the game window
+        y: y-coordinate of the top-left corner of the game window
+    """
+    global window_offset
+    window_offset = (x, y)
+    log.info(f"Window offset set to {window_offset}")
+    
+def get_window_offset():
+    """
+    Return the current window offset
+    """
+    return window_offset
 
 
 def move_drag_tween(n):

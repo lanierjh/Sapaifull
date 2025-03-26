@@ -10,7 +10,7 @@ import os
 from skimage.metrics import structural_similarity as ssim
 from sklearn.metrics.pairwise import cosine_similarity
 import matplotlib.pyplot as plt
-from .utils import get_screen_scale
+from .utils import get_screen_scale, get_window_offset, set_window_offset
 import tensorflow as tf
 
 
@@ -36,6 +36,9 @@ supported_food = [
 
 print("DIMENSIONS_SCALE:", dimensions_scale)
 
+# Set the window offset before using any image detection
+# Replace these values with the actual coordinates of your game window
+set_window_offset(100, 200)  # Example: window is at position (100, 200) on your screen
 
 def get_img_from_coords(coords, to_numpy=True):
     """
@@ -44,11 +47,14 @@ def get_img_from_coords(coords, to_numpy=True):
     # as tuple does not support item assignment, change to np.array
     coords = np.array(coords)
 
+    # Get window offset
+    offset_x, offset_y = get_window_offset()
+    
     # scale coords
-    coords[0] = coords[0] * dimensions_scale[0]
-    coords[1] = coords[1] * dimensions_scale[1]
-    coords[2] = coords[2] * dimensions_scale[0]
-    coords[3] = coords[3] * dimensions_scale[1]
+    coords[0] = coords[0] * dimensions_scale[0] + offset_x
+    coords[1] = coords[1] * dimensions_scale[1] + offset_y
+    coords[2] = coords[2] * dimensions_scale[0] + offset_x
+    coords[3] = coords[3] * dimensions_scale[1] + offset_y
 
     coords = tuple(np.round(coords).astype(int))
 
