@@ -20,6 +20,7 @@ import pyautogui as gui
 import sys
 import logging as log
 from .utils import opponent_generator, get_screen_scale, kill_process
+from .generate_response import generate_response
 
 
 # global variable
@@ -226,6 +227,7 @@ def run(ret):
 
                 formatted_actions = "\n".join(actions_for_chat)
                 print(formatted_actions)
+                # generate_response(formatted_actions)
 
         listener.join()
 

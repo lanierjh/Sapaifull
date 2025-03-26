@@ -2,6 +2,12 @@ from google import genai
 from google.genai import types
 import os
 from dotenv import load_dotenv
+import json
+import webbrowser
+from urllib.parse import quote
+import time
+import requests
+from urllib.parse import urljoin
 
 load_dotenv()
 
@@ -9,9 +15,30 @@ gemini_api_key = os.getenv("GEMINI_API_KEY")
 
 client = genai.Client(api_key=gemini_api_key)
 
+def send_to_ui(message):
+    """Send a message directly to the UI using JavaScript injection"""
+    try:
+        # The URL where your message receiver is running
+        base_url = "http://127.0.0.1:5500/sapai-extension/message.html"
+        
+        # URL-encode the message
+        encoded_message = quote(message)
+        
+        # Full URL with the message as a parameter and auto-close flag
+        full_url = f"{base_url}?message={encoded_message}&autoclose=true"
+        
+        # Open the URL in a browser
+        webbrowser.open(full_url)
+        
+        # Give the browser time to process
+        time.sleep(0.5)
+        
+        return True
+    except Exception as e:
+        print(f"Error sending message to UI: {e}")
+        return False
 
 def generate_response(formatted_actions):
-
     prompt = """
     You are an expert Super Auto Pets coach. Your job is to provide friendly, helpful advice to players based on the suggested actions below.
 
@@ -34,8 +61,6 @@ def generate_response(formatted_actions):
     Respond with your advice in a conversational way, as if you're a helpful coach guiding the player.
     """
     
-    # formatted_prompt = prompt.format(actions=actions_for_chat)
-    
     # llm call
     response = client.models.generate_content(
         model="gemini-2.0-flash",
@@ -46,7 +71,11 @@ def generate_response(formatted_actions):
 
     formatted_response = response.text
 
+    print("\nLLM Response:")
     print(formatted_response)
+    
+    # Send the response to the UI
+    send_to_ui(formatted_response)
 
 if __name__ == "__main__":
     
@@ -58,4 +87,6 @@ if __name__ == "__main__":
     formatted_actions = "\n".join(actions_for_chat)
 
     generate_response(formatted_actions)
+
+
 

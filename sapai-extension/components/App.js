@@ -2,7 +2,7 @@ const App = () => {
   const [messages, setMessages] = React.useState([
     {
       id: 1,
-      content: "Hello! I'm your Super Auto Pets Coach.",
+      content: "Hello! I'm your Super Auto Pets Coach. I'll provide advice as you play.",
       timestamp: new Date().toISOString(),
       isUser: false
     }
@@ -11,7 +11,7 @@ const App = () => {
   // Function to add a new message
   const addMessage = (content) => {
     const newMessage = {
-      id: messages.length + 1,
+      id: Date.now(),
       content: content,
       timestamp: new Date().toISOString(),
       isUser: false
@@ -21,25 +21,31 @@ const App = () => {
   };
   
   React.useEffect(() => {
-    // For demo purposes, add a new message every few seconds
-    const interval = setInterval(() => {
-      const demoResponses = [
-        "Here's some information you requested...",
-        "I've analyzed the data and found interesting patterns.",
-        "Based on the latest research, I can tell you that...",
-        "The results of your query show the following trends..."
-      ];
-      
-      addMessage(demoResponses[Math.floor(Math.random() * demoResponses.length)]);
-    }, 5000);
+    // Check for messages in localStorage every second
+    const checkLocalStorage = () => {
+      const storedMessage = localStorage.getItem('sapai-message');
+      if (storedMessage) {
+        try {
+          addMessage(storedMessage);
+          // Clear the message after reading it
+          localStorage.removeItem('sapai-message');
+        } catch (e) {
+          console.error("Error processing stored message:", e);
+        }
+      }
+    };
     
-    return () => clearInterval(interval);
+    // Check immediately on mount
+    checkLocalStorage();
+    
+    // Then check periodically
+    const interval = setInterval(checkLocalStorage, 1000);
+    
+    return () => {
+      // Clean up
+      clearInterval(interval);
+    };
   }, []);
-  
-  // This function would be called when receiving messages from your LLM service
-  const handleLLMResponse = (response) => {
-    addMessage(response);
-  };
   
   return (
     <div className="app-container">

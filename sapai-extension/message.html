@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Message Receiver</title>
+    <script>
+        // Get the message from the URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const message = urlParams.get('message');
+        
+        if (message) {
+            // Store the message in localStorage
+            localStorage.setItem('sapai-message', message);
+            
+            // Try to notify the main window directly
+            try {
+                if (window.opener) {
+                    window.opener.postMessage({
+                        type: 'sapai-message',
+                        content: message
+                    }, '*');
+                }
+            } catch (e) {
+                console.error("Error posting message:", e);
+            }
+            
+            // Close this window immediately
+            window.close();
+        }
+    </script>
+</head>
+<body>
+    <h1>Message Receiver</h1>
+    <p>This page stores messages for the main application.</p>
+</body>
+</html> 

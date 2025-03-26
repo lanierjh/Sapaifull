@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Message Injector</title>
+    <script>
+        // Log when the page loads
+        console.log("Inject.html loaded");
+        
+        // Function to run when the page loads
+        window.onload = function() {
+            // Get the JavaScript code from the URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const jsCode = urlParams.get('js');
+            
+            console.log("Received JS code:", jsCode);
+            
+            // Execute the JavaScript code
+            if (jsCode) {
+                try {
+                    // Check if we're in an iframe
+                    const isInIframe = window !== window.parent;
+                    console.log("Is in iframe:", isInIframe);
+                    
+                    if (isInIframe) {
+                        // We're in an iframe, use parent
+                        console.log("Using window.parent.eval");
+                        window.parent.eval(jsCode);
+                    } else {
+                        // We're not in an iframe, use window.opener or just window
+                        if (window.opener) {
+                            console.log("Using window.opener.eval");
+                            window.opener.eval(jsCode);
+                        } else {
+                            console.log("Using window.eval");
+                            window.eval(jsCode);
+                        }
+                    }
+                    
+                    document.getElementById('result').innerText = "Message sent successfully!";
+                } catch (error) {
+                    console.error("Error executing JavaScript:", error);
+                    document.getElementById('result').innerText = "Error: " + error.message;
+                }
+            } else {
+                document.getElementById('result').innerText = "No JavaScript code provided.";
+            }
+        };
+    </script>
+</head>
+<body>
+    <!-- This page is used to inject JavaScript into the main page -->
+    <h1>Message Injector</h1>
+    <p>This page should not be visible directly. It's used to inject messages into the main application.</p>
+    
+    <div id="result">Processing...</div>
+    
+    <!-- Test links to verify the page is working -->
+    <p>
+        <a href="?js=console.log('Test message from inject.html')">Test Console Log</a>
+    </p>
+    <p>
+        <a href="?js=window.receiveMessage('Test message from inject.html link')">Test receiveMessage</a>
+    </p>
+</body>
+</html> 
