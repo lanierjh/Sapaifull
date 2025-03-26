@@ -1,10 +1,10 @@
 {
     "manifest_version": 3,
-    "name": "SAPAI extension",
+    "name": "SAPAI Chat Display",
     "version": "1.0",
-    "description": "A simple Chrome extension",
+    "description": "Displays LLM responses in a chat-like interface",
     "action": {
-      "default_popup": "popup.html"
+      "default_popup": "index.html"
     },
     "permissions": ["storage", "activeTab"],
     "background": {
