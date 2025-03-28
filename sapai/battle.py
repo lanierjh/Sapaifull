@@ -735,7 +735,11 @@ def battle_phase_knockout(battle_obj, phase, teams, pet_priority, phase_dict):
             fteam, oteam = get_teams([team_idx, 0], teams)
             current_length = 0
             while True:
-                pet_idx = fteam.index(apet)
+                try:
+                    pet_idx = fteam.index(apet)
+                except Exception as e:
+                    print(f"[WARNING] Skipping invalid pet during knockout phase: {apet}, Error: {e}")
+                    continue  # Skip to next pet
                 activated, targets, possible = apet.knockout_trigger(oteam)
                 append_phase_list(
                     phase_list, apet, team_idx, pet_idx, activated, targets, possible
