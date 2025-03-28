@@ -75,7 +75,11 @@ def generate_response(formatted_actions):
     print(formatted_response)
     
     # Send the response to the UI
-    send_to_ui(formatted_response)
+    success = send_to_ui(formatted_response)
+    print(f"UI message sent: {success}")
+    
+    # Return the response and success status
+    return formatted_response, success
 
 if __name__ == "__main__":
     
