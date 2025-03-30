@@ -68,4 +68,31 @@ body {
   font-size: 0.7rem;
   color: #888;
   text-align: right;
+}
+
+.app-footer {
+  padding: 10px 15px;
+  background-color: #f9f9f9;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: center;
+}
+
+.action-button {
+  background-color: #4285f4;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.action-button:hover {
+  background-color: #3367d6;
+}
+
+.action-button:active {
+  background-color: #2a56c6;
 } 

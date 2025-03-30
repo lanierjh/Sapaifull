@@ -22,6 +22,9 @@ import logging as log
 from .utils import opponent_generator, get_screen_scale, kill_process
 from .generate_response import generate_response
 import time
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+import threading
 
 
 # global variable
@@ -30,6 +33,24 @@ stop_program = False
 # get screen resolution scale, store as global variable in this scope
 dimensions_scale = get_screen_scale()  # width, height
 
+# Create a Flask app for communication with the frontend
+app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
+
+# Global variable to track if action is requested
+action_requested = False
+action_lock = threading.Lock()
+
+@app.route('/request_action', methods=['POST'])
+def request_action():
+    global action_requested
+    with action_lock:
+        action_requested = True
+    return jsonify({"status": "success", "message": "Action requested"})
+
+# Function to start the Flask server
+def start_flask_server():
+    app.run(host='0.0.0.0', port=3000)
 
 def pause():
     """
@@ -75,6 +96,13 @@ def run(ret):
     """
     method to use pretrained RL model with the real game (deployment)
     """
+    # Start Flask server in a separate thread
+    flask_thread = threading.Thread(target=start_flask_server)
+    flask_thread.daemon = True  # This ensures the thread will exit when the main program exits
+    flask_thread.start()
+    
+    global action_requested
+    
     interface = SuperAutoPetsMouse()
     action_dict = interface.get_action_dict()
 
@@ -97,6 +125,15 @@ def run(ret):
 
     with pynput.keyboard.Listener(on_press=kill_process) as listener:
         while not stop_program:
+            # Wait for action request from frontend
+            log.info("Waiting for user to request next action...")
+            while not action_requested and not stop_program:
+                time.sleep(0.1)  # Small sleep to prevent CPU hogging
+            
+            # Reset the action_requested flag
+            with action_lock:
+                action_requested = False
+            
             time_pause(0.5)
             log.info("CV SYSTEM [self.run]: Detect the Pets and Food" +
                                   " in the Shop Slots")

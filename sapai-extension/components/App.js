@@ -20,6 +20,34 @@ const App = () => {
     setMessages(prevMessages => [...prevMessages, newMessage]);
   };
   
+  // Function to request next action
+  const requestNextAction = () => {
+    // Send a message to the Python backend
+    fetch('http://localhost:3000/request_action', {
+      method: 'POST',
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log("Action requested successfully:", data);
+      // Add a user message indicating action was requested
+      const userMessage = {
+        id: Date.now(),
+        content: "Next action please.",
+        timestamp: new Date().toISOString(),
+        isUser: true
+      };
+      setMessages(prevMessages => [...prevMessages, userMessage]);
+    })
+    .catch(error => {
+      console.error("Error requesting action:", error);
+    });
+  };
+  
   React.useEffect(() => {
     // Check for messages in localStorage every second
     const checkLocalStorage = () => {
@@ -55,6 +83,14 @@ const App = () => {
       <main className="app-main">
         <ChatHistory messages={messages} />
       </main>
+      <footer className="app-footer">
+        <button 
+          className="action-button" 
+          onClick={requestNextAction}
+        >
+          Get Next Action
+        </button>
+      </footer>
     </div>
   );
 }; 
