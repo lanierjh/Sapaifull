@@ -84,13 +84,19 @@ const App = () => {
         <ChatHistory messages={messages} />
       </main>
       <footer className="app-footer">
-        <button 
-          className="action-button" 
-          onClick={requestNextAction}
-        >
-          Get Next Action
-        </button>
+        <div>
+          <button 
+            className="action-button" 
+            onClick={requestNextAction}
+          >
+            Get Next Action
+          </button>
+        </div>
+        
       </footer>
+      <div className="api-notice">
+            Note: Free tier of Gemini api being used, rate limits may be met
+      </div>
     </div>
   );
 }; 

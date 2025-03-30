@@ -149,6 +149,8 @@ def run(ret):
             log.info("CV SYSTEM [self.run]: The detected Pets and Food in the Shop is : {}".format(pets))
             log.info("GAME ENGINE [self.run]: Set Environment Shop = " +
                                   "detected Pets and Food")
+            actions_for_chat.append(f"CV SYSTEM [self.run]: The detected Pets and Food in the Shop" + " is : {}".format(pets))
+            
             env.player.shop = Shop(pets)
             if env.player.lives <= 3:
                 log.info("GAME ENGINE [self.run]: Increment number of " +
@@ -165,12 +167,6 @@ def run(ret):
             action = int(action) 
             
             time_pause(1.0)  # 0.5
-
-            # store action logs in array
-            actions_for_chat.append(f"GAME ENGINE [self.run]:" +
-                                  " Best Action = {} {}".format(action, get_action_name(action)))
-            actions_for_chat.append(f"GAME ENGINE [self.run]: Instruction given " +
-                                  "by the model = {}".format(s[action][1:]))
             
 
             log.info("GAME ENGINE [self.run]:" +
@@ -179,6 +175,15 @@ def run(ret):
                                   " Best Action = {} {}".format(action, get_action_name(action)))
             log.info("GAME ENGINE [self.run]: Instruction given " +
                                   "by the model = {}".format(s[action][1:]))
+            
+            # store action logs in array
+            actions_for_chat.append(f"GAME ENGINE [self.run]:" +
+                                  " Current Team and Shop \n{}".format(s[action][0]))
+            actions_for_chat.append(f"GAME ENGINE [self.run]:" +
+                                  " Best Action = {} {}".format(action, get_action_name(action)))
+            actions_for_chat.append(f"GAME ENGINE [self.run]: Instruction given " +
+                                  "by the model = {}".format(s[action][1:]))
+
             # log.info("GAME ENGINE [self.en")
             if env._is_valid_action(action):
                 log.info("GAME ENGINE [self.run]: Action is valid")

@@ -96,3 +96,9 @@ body {
 .action-button:active {
   background-color: #2a56c6;
 } 
+
+.api-notice {
+    font-size: 0.7rem;
+    color: #888;
+    text-align: center;
+}
