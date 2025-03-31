@@ -195,7 +195,9 @@ def run(ret):
                         # action_dict[get_action_name(action)](s[action][1:])
             log.info("GAME ENGINE [self.run]: Implements the action" +
                      " in the Environment\n\n\n")
+            print("before env.step")
             obs, reward, done, info = env.step(action)
+            print("after env.step")
             if get_action_name(action) == 'end_turn':
                 # time_pause(1.5)
                 # end turned press, start clicking until end turn button shows again (game is over)

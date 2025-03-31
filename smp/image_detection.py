@@ -28,7 +28,15 @@ model = tf.keras.applications.VGG16(weights='imagenet', include_top=False, input
 # get screen resolution scale, store as global variable in this scope
 dimensions_scale = get_screen_scale()
 
-supported_pets = ["ant", "beaver", "cricket", "duck", "fish", "horse", "otter", "pig", "sloth"]
+supported_pets = [
+    "ant", "armadillo", "badger", "beaver", "bison", "blowfish", "boar", "camel", 
+    "cat", "cow", "crab", "cricket", "crocodile", "deer", "dodo", "dog", "dolphin", 
+    "dragon", "duck", "elephant", "fish", "flamingo", "fly", "giraffe", "gorilla", 
+    "hedgehog", "hippo", "horse", "kangaroo", "leopard", "mammoth", "monkey", "mosquito", 
+    "mouse", "otter", "ox", "parrot", "peacock", "penguin", "pig", "rabbit", "rat", "rhino", 
+    "rooster", "scorpion", "seal", "shark", "sheep", "skunk", "sloth", "snail", "snake", 
+    "spider", "squirrel", "swan", "tiger", "turkey", "turtle", "whale", "wolverine", "worm"
+]
 supported_food = [
     "apple", "banana", "canned_food", "chili", "chocolate", "cupcake", "garlic",
     "melon", "pear", "pizza", "salad_bowl", "sleeping_pill", "steak", "sushi",
