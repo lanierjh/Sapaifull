@@ -190,9 +190,9 @@ def run(ret):
                 actions_for_chat.append(f"GAME ENGINE [self.run]: Action is valid")
                 
                 # Store the action name for later use
-                action_name = get_action_name(action)
+                # action_name = get_action_name(action)
                 
-                if action_name == 'buy_food':
+                if get_action_name(action) == 'buy_food':
                     num_pets = 0
                     num_food = 0
                     for shop_slot in env.player.shop:
@@ -201,13 +201,13 @@ def run(ret):
                         if shop_slot.slot_type == "food":
                             num_food += 1
                     
-                    log.info("GAME ENGINE [self.run]:" + " Calls {}".format(action_name) +
+                    log.info("GAME ENGINE [self.run]:" + " Calls {}".format(get_action_name(action)) +
                              " with parameters {}, {}".format(s[action][1:], num_pets - num_food % 2))
-                    actions_for_chat.append(f"GAME ENGINE [self.run]:" + " Calls {}".format(action_name) +
+                    actions_for_chat.append(f"GAME ENGINE [self.run]:" + " Calls {}".format(get_action_name(action)) +
                              " with parameters {}, {}".format(s[action][1:], num_pets - num_food % 2))
                     
                     # action_dict[get_action_name(action)](s[action][1:], num_pets - num_food % 2)
-                elif action_name == 'buy_team_food':
+                elif get_action_name(action) == 'buy_team_food':
                     num_pets = 0
                     num_food = 0
                     for shop_slot in env.player.shop:
@@ -216,26 +216,26 @@ def run(ret):
                         if shop_slot.slot_type == "food":
                             num_food += 1
 
-                    log.info("GAME ENGINE [self.run]:" + " Calls {}".format(action_name) +
+                    log.info("GAME ENGINE [self.run]:" + " Calls {}".format(get_action_name(action)) +
                              " with parameters {}, {}".format(s[action][1:], num_pets - num_food % 2))
-                    actions_for_chat.append(f"GAME ENGINE [self.run]:" + " Calls {}".format(action_name) +
+                    actions_for_chat.append(f"GAME ENGINE [self.run]:" + " Calls {}".format(get_action_name(action)) +
                              " with parameters {}, {}".format(s[action][1:], num_pets - num_food % 2))
 
                     # action_dict[get_action_name(action)](s[action][1:], num_pets - num_food % 2)
                 else:
-                    if action_name == 'roll':
+                    if get_action_name(action) == 'roll':
                         
                         log.info("GAME ENGINE [self.run]: " +
-                                 "Calls {}".format(action_name) + " with no parameters")
+                                 "Calls {}".format(get_action_name(action)) + " with no parameters")
                         actions_for_chat.append(f"GAME ENGINE [self.run]: " +
-                                 "Calls {}".format(action_name) + " with no parameters")
+                                 "Calls {}".format(get_action_name(action)) + " with no parameters")
 
                         # action_dict[get_action_name(action)]()
                     else:
 
-                        log.info("GAME ENGINE [self.run]: " + "Calls {}".format(action_name) +
+                        log.info("GAME ENGINE [self.run]: " + "Calls {}".format(get_action_name(action)) +
                                  " with parameters {}".format(s[action][1:]))
-                        actions_for_chat.append(f"GAME ENGINE [self.run]: " + "Calls {}".format(action_name) +
+                        actions_for_chat.append(f"GAME ENGINE [self.run]: " + "Calls {}".format(get_action_name(action)) +
                                  " with parameters {}".format(s[action][1:]))
                         
                         # action_dict[get_action_name(action)](s[action][1:])
