@@ -116,6 +116,8 @@ def matching(image, needle_img):
     """
 
     needle_img = cv2.resize(needle_img, image.shape[:2][::-1])
+    # Horizontally flip the needle image to match game orientation
+    needle_img = cv2.flip(needle_img, 1)  
     needle_img = needle_img[..., ::-1]
     image = image[..., ::-1]
 
