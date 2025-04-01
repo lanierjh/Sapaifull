@@ -10,9 +10,7 @@
 *.log
 *.DS_Store
 *__MACOSX/
-*pets/
 *pets.zip
-*food/
 *food.zip
 *misc/
 *misc.zip
