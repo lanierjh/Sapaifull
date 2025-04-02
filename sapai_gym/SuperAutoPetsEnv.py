@@ -35,10 +35,10 @@ class SuperAutoPetsEnv(gym.Env):
     MAX_SHOP_PETS = 6
     # Max number of foods that can be in a shop
     MAX_SHOP_FOODS = 2
-    ALL_PETS = ["pet-duck", "pet-beaver", "pet-pigeon", "pet-pig", "pet-ant", "pet-mosquito", "pet-fish", "pet-cricket", "pet-horse", "pet-snail", "pet-crab", "pet-swan", "pet-rat", "pet-hedgehog", "pet-peacock", "pet-flamingo", "pet-worm", "pet-kangaroo", "pet-spider", "pet-dodo", "pet-badger", "pet-dolphin", "pet-giraffe", "pet-elephant", "pet-camel", "pet-rabbit", "pet-ox", "pet-dog", "pet-sheep", "pet-skunk", "pet-hippo", "pet-bison", "pet-pufferfish", "pet-turtle", "pet-squirrel", "pet-penguin", "pet-deer", "pet-whale", "pet-parrot", "pet-scorpion", "pet-crocodile", "pet-rhino", "pet-monkey", "pet-armadillo", "pet-cow", "pet-seal", "pet-chicken", "pet-shark", "pet-turkey", "pet-cheetah", "pet-boar", "pet-tiger", "pet-bear", "pet-gorilla", "pet-dragon", "pet-mammoth", "pet-cat", "pet-snake", "pet-fly", "pet-zombie-cricket", "pet-bus", "pet-dirty-rat", "pet-ram", "pet-zombie-fly"]
+    ALL_PETS = ["pet-otter", "pet-blowfish", "pet-duck", "pet-beaver", "pet-pigeon", "pet-pig", "pet-ant", "pet-mosquito", "pet-fish", "pet-cricket", "pet-horse", "pet-snail", "pet-crab", "pet-swan", "pet-rat", "pet-hedgehog", "pet-peacock", "pet-flamingo", "pet-worm", "pet-kangaroo", "pet-spider", "pet-dodo", "pet-badger", "pet-dolphin", "pet-giraffe", "pet-elephant", "pet-camel", "pet-rabbit", "pet-ox", "pet-dog", "pet-sheep", "pet-skunk", "pet-hippo", "pet-bison", "pet-turtle", "pet-squirrel", "pet-penguin", "pet-deer", "pet-whale", "pet-parrot", "pet-scorpion", "pet-crocodile", "pet-rhino", "pet-monkey", "pet-armadillo", "pet-cow", "pet-seal", "pet-rooster", "pet-chick", "pet-shark", "pet-turkey", "pet-leopard", "pet-boar", "pet-tiger", "pet-wolverine", "pet-gorilla", "pet-dragon", "pet-mammoth", "pet-cat", "pet-snake", "pet-fly", "pet-zombie-cricket", "pet-bus", "pet-dirty-rat", "pet-ram", "pet-zombie-fly"]
     #Below is the original set of pets in the repo, above is just the pets in the turtle pack & their summons
-    #ALL_PETS = ["pet-ant", "pet-beaver", "pet-beetle", "pet-bluebird", "pet-cricket", "pet-duck", "pet-fish", "pet-horse", "pet-ladybug", "pet-mosquito", "pet-otter", "pet-pig", "pet-sloth", "pet-bat", "pet-crab", "pet-dodo", "pet-dog", "pet-dromedary", "pet-elephant", "pet-flamingo", "pet-hedgehog", "pet-peacock", "pet-rat", "pet-shrimp", "pet-spider", "pet-swan", "pet-tabby-cat", "pet-badger", "pet-blowfish", "pet-caterpillar", "pet-camel", "pet-hatching-chick", "pet-giraffe", "pet-kangaroo", "pet-owl", "pet-ox", "pet-puppy", "pet-rabbit", "pet-sheep", "pet-snail", "pet-tropical-fish", "pet-turtle", "pet-whale", "pet-bison", "pet-buffalo", "pet-deer", "pet-dolphin", "pet-hippo", "pet-llama", "pet-lobster", "pet-monkey", "pet-penguin", "pet-poodle", "pet-rooster", "pet-skunk", "pet-squirrel", "pet-worm", "pet-chicken", "pet-cow", "pet-crocodile", "pet-eagle", "pet-goat", "pet-microbe", "pet-parrot", "pet-rhino", "pet-scorpion", "pet-seal", "pet-shark", "pet-turkey", "pet-cat", "pet-boar", "pet-dragon", "pet-fly", "pet-gorilla", "pet-leopard", "pet-mammoth", "pet-octopus", "pet-sauropod", "pet-snake", "pet-tiger", "pet-tyrannosaurus", "pet-zombie-cricket", "pet-bus", "pet-zombie-fly", "pet-dirty-rat", "pet-chick", "pet-ram", "pet-butterfly", "pet-bee"]
-    ALL_FOODS = ["food-apple", "food-honey", "food-cupcake", "food-meat-bone", "food-sleeping-pill", "food-garlic", "food-salad-bowl", "food-canned-food", "food-pear", "food-chili", "food-chocolate", "food-sushi", "food-melon", "food-mushroom", "food-pizza", "food-steak", "food-milk"]
+    #ALL_PETS = ["pet-ant", "pet-beaver", "pet-beetle", "pet-bluebird", "pet-cricket", "pet-duck", "pet-fish", "pet-horse", "pet-ladybug", "pet-mosquito", "pet-otter", "pet-pig", "pet-sloth", "pet-bat", "pet-crab", "pet-dodo", "pet-dog", "pet-dromedary", "pet-elephant", "pet-flamingo", "pet-hedgehog", "pet-peacock", "pet-rat", "pet-shrimp", "pet-spider", "pet-swan", "pet-tabby-cat", "pet-badger", "pet-blowfish", "pet-caterpillar", "pet-camel", "pet-hatching-chick", "pet-giraffe", "pet-kangaroo", "pet-owl", "pet-ox", "pet-puppy", "pet-rabbit", "pet-sheep", "pet-snail", "pet-tropical-fish", "pet-turtle", "pet-whale", "pet-bison", "pet-buffalo", "pet-deer", "pet-dolphin", "pet-hippo", "pet-llama", "pet-lobster", "pet-monkey", "pet-penguin", "pet-poodle", "pet-rooster", "pet-skunk", "pet-squirrel", "pet-worm", "pet-chicken", "pet-cow", "pet-crocodile", "pet-eagle", "pet-goat", "pet-microbe", "pet-parrot", "pet-rhino", "pet-scorpion", "pet-seal", "pet-shark", "pet-turkey", "pet-cat", "pet-boar", "pet-dragon", "pet-fly", "pet-gorilla", "pet-leopard", "pet-mammoth", "pet-octopus", "pet-sauropod", "pet-snake", "pet-tiger", "pet-tyrannosaurus", "pet-zombie-cricket", "pet-bus", "pet-zombie-fly", "pet-dirty-rat", "pet-chick", "pet-ram", "pet-butterfly", "pet-bee"]    ALL_FOODS = ["food-apple", "food-honey", "food-cupcake", "food-meat-bone", "food-sleeping-pill", "food-garlic", "food-salad-bowl", "food-canned-food", "food-pear", "food-chili", "food-chocolate", "food-sushi", "food-melon", "food-mushroom", "food-pizza", "food-steak", "food-milk"]
+    ALL_FOODS = ["food-bread-crumb", "food-apple", "food-honey", "food-cupcake", "food-meat-bone", "food-sleeping-pill", "food-garlic", "food-salad-bowl", "food-canned-food", "food-pear", "food-chili", "food-chocolate", "food-sushi", "food-melon", "food-mushroom", "food-pizza", "food-steak", "food-milk"]
     ALL_STATUSES = ["status-weak", "status-coconut-shield", "status-honey-bee", "status-bone-attack", "status-garlic-armor", "status-splash-attack", "status-melon-armor", "status-extra-life", "status-steak-attack", "status-poison-attack"]
 
     def __init__(self, opponent_generator, valid_actions_only, manual_battles=False):
@@ -179,8 +179,8 @@ class SuperAutoPetsEnv(gym.Env):
             if shop_slot.slot_type == "food":
                 if shop_slot.cost <= self.player.gold:
                     # Multi-foods (eg. salad, sushi, etc.)
-                    food_effect = data["foods"][shop_slot.item.name]["ability"]["effect"]
-                    if shop_slot.item.name == "food-canned-food" or ("target" in food_effect and "kind" in food_effect["target"] and food_effect["target"]["kind"] == "RandomFriend"):
+                    food_effect = data["foods"][shop_slot.obj.name]["ability"]["effect"]
+                    if shop_slot.obj.name == "food-canned-food" or ("target" in food_effect and "kind" in food_effect["target"] and food_effect["target"]["kind"] == "RandomFriend"):
                         action_num = self.ACTION_BASE_NUM["buy_food_team"] + food_index
                         action_dict[action_num] = (self.player.buy_food, shop_idx)
                     else:
@@ -212,11 +212,11 @@ class SuperAutoPetsEnv(gym.Env):
         for shop_idx, shop_slot in enumerate(self.player.shop):
             if shop_slot.slot_type == "pet":
                 # Can't combine if pet not already on team
-                if shop_slot.item.name not in team_names:
+                if shop_slot.obj.name not in team_names:
                     continue
 
                 if shop_slot.cost <= self.player.gold:
-                    for team_idx in team_names[shop_slot.item.name]:
+                    for team_idx in team_names[shop_slot.obj.name]:
                         action_num = self.ACTION_BASE_NUM["buy_combine"] + (shop_pet_index * self.MAX_TEAM_PETS) + team_idx
                         action_dict[action_num] = (self.player.buy_combine, shop_idx, team_idx)
                 shop_pet_index += 1
@@ -357,9 +357,9 @@ class SuperAutoPetsEnv(gym.Env):
 
     def _get_shop_foods(self):
         food_slots = []
-        for slot in self.player.shop.shop_slots:
+        for slot in self.player.shop.slots:
             if slot.slot_type == "food":
-                food_slots.append((slot.item, slot.cost))
+                food_slots.append((slot.obj, slot.cost))
         return food_slots
 
     def _encode_state(self):
@@ -393,10 +393,21 @@ class SuperAutoPetsEnv(gym.Env):
     @staticmethod
     def _encode_single(value, category):
         np_array = np.array([[value]])
-        encoder = OneHotEncoder(categories=[category], sparse=False)
+        encoder = OneHotEncoder(categories=[category], sparse_output=False)
         onehot_encoded = encoder.fit_transform(np_array)
         collapsed = np.sum(onehot_encoded, axis=0)
         return collapsed
+    
+    def get_wrapper_attr(self, attr_name):
+        """
+        Retrieves the attribute or method specified by attr_name.
+        This is used to allow wrappers or utilities to access specific
+        methods or attributes in the environment.
+        """
+        if hasattr(self, attr_name):
+            return getattr(self, attr_name)
+        else:
+            raise AttributeError(f"{self.__class__.__name__} has no attribute '{attr_name}'")
 
 def get_action_name(k: int) -> str:
     name_val = list(SuperAutoPetsEnv.ACTION_BASE_NUM.items())

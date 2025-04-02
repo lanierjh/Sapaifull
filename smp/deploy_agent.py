@@ -20,6 +20,11 @@ import pyautogui as gui
 import sys
 import logging as log
 from .utils import opponent_generator, get_screen_scale, kill_process
+from .generate_response import generate_response
+import time
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+import threading
 
 
 # global variable
@@ -28,6 +33,24 @@ stop_program = False
 # get screen resolution scale, store as global variable in this scope
 dimensions_scale = get_screen_scale()  # width, height
 
+# Create a Flask app for communication with the frontend
+app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
+
+# Global variable to track if action is requested
+action_requested = False
+action_lock = threading.Lock()
+
+@app.route('/request_action', methods=['POST'])
+def request_action():
+    global action_requested
+    with action_lock:
+        action_requested = True
+    return jsonify({"status": "success", "message": "Action requested"})
+
+# Function to start the Flask server
+def start_flask_server():
+    app.run(host='0.0.0.0', port=3000)
 
 def pause():
     """
@@ -73,6 +96,13 @@ def run(ret):
     """
     method to use pretrained RL model with the real game (deployment)
     """
+    # Start Flask server in a separate thread
+    flask_thread = threading.Thread(target=start_flask_server)
+    flask_thread.daemon = True  # This ensures the thread will exit when the main program exits
+    flask_thread.start()
+    
+    global action_requested
+    
     interface = SuperAutoPetsMouse()
     action_dict = interface.get_action_dict()
 
@@ -90,8 +120,20 @@ def run(ret):
     env = SuperAutoPetsEnv(opponent_generator, valid_actions_only=True)
     obs = env.reset()
 
+    # store the models actions in an array
+    actions_for_chat = []
+
     with pynput.keyboard.Listener(on_press=kill_process) as listener:
         while not stop_program:
+            # Wait for action request from frontend
+            log.info("Waiting for user to request next action...")
+            while not action_requested and not stop_program:
+                time.sleep(0.1)  # Small sleep to prevent CPU hogging
+            
+            # Reset the action_requested flag
+            with action_lock:
+                action_requested = False
+            
             time_pause(0.5)
             log.info("CV SYSTEM [self.run]: Detect the Pets and Food" +
                                   " in the Shop Slots")
@@ -107,6 +149,8 @@ def run(ret):
             log.info("CV SYSTEM [self.run]: The detected Pets and Food in the Shop is : {}".format(pets))
             log.info("GAME ENGINE [self.run]: Set Environment Shop = " +
                                   "detected Pets and Food")
+            actions_for_chat.append(f"CV SYSTEM [self.run]: The detected Pets and Food in the Shop" + " is : {}".format(pets))
+            
             env.player.shop = Shop(pets)
             if env.player.lives <= 3:
                 log.info("GAME ENGINE [self.run]: Increment number of " +
@@ -123,15 +167,31 @@ def run(ret):
             action = int(action) 
             
             time_pause(1.0)  # 0.5
+            
+
             log.info("GAME ENGINE [self.run]:" +
                                   " Current Team and Shop \n{}".format(s[action][0]))
             log.info("GAME ENGINE [self.run]:" +
                                   " Best Action = {} {}".format(action, get_action_name(action)))
             log.info("GAME ENGINE [self.run]: Instruction given " +
                                   "by the model = {}".format(s[action][1:]))
+            
+            # store action logs in array
+            actions_for_chat.append(f"GAME ENGINE [self.run]:" +
+                                  " Current Team and Shop \n{}".format(s[action][0]))
+            actions_for_chat.append(f"GAME ENGINE [self.run]:" +
+                                  " Best Action = {} {}".format(action, get_action_name(action)))
+            actions_for_chat.append(f"GAME ENGINE [self.run]: Instruction given " +
+                                  "by the model = {}".format(s[action][1:]))
+
             # log.info("GAME ENGINE [self.en")
             if env._is_valid_action(action):
                 log.info("GAME ENGINE [self.run]: Action is valid")
+                actions_for_chat.append(f"GAME ENGINE [self.run]: Action is valid")
+                
+                # Store the action name for later use
+                # action_name = get_action_name(action)
+                
                 if get_action_name(action) == 'buy_food':
                     num_pets = 0
                     num_food = 0
@@ -140,10 +200,14 @@ def run(ret):
                             num_pets += 1
                         if shop_slot.slot_type == "food":
                             num_food += 1
+                    
                     log.info("GAME ENGINE [self.run]:" + " Calls {}".format(get_action_name(action)) +
                              " with parameters {}, {}".format(s[action][1:], num_pets - num_food % 2))
-                    action_dict[get_action_name(action)](s[action][1:], num_pets - num_food % 2)
-                elif get_action_name(action) == 'buy_team_food':  # same behaviour as for buy_food for single animal
+                    actions_for_chat.append(f"GAME ENGINE [self.run]:" + " Calls {}".format(get_action_name(action)) +
+                             " with parameters {}, {}".format(s[action][1:], num_pets - num_food % 2))
+                    
+                    # action_dict[get_action_name(action)](s[action][1:], num_pets - num_food % 2)
+                elif get_action_name(action) == 'buy_team_food':
                     num_pets = 0
                     num_food = 0
                     for shop_slot in env.player.shop:
@@ -151,50 +215,77 @@ def run(ret):
                             num_pets += 1
                         if shop_slot.slot_type == "food":
                             num_food += 1
+
                     log.info("GAME ENGINE [self.run]:" + " Calls {}".format(get_action_name(action)) +
                              " with parameters {}, {}".format(s[action][1:], num_pets - num_food % 2))
-                    action_dict[get_action_name(action)](s[action][1:], num_pets - num_food % 2)
+                    actions_for_chat.append(f"GAME ENGINE [self.run]:" + " Calls {}".format(get_action_name(action)) +
+                             " with parameters {}, {}".format(s[action][1:], num_pets - num_food % 2))
+
+                    # action_dict[get_action_name(action)](s[action][1:], num_pets - num_food % 2)
                 else:
                     if get_action_name(action) == 'roll':
+                        
                         log.info("GAME ENGINE [self.run]: " +
                                  "Calls {}".format(get_action_name(action)) + " with no parameters")
-                        action_dict[get_action_name(action)]()
+                        actions_for_chat.append(f"GAME ENGINE [self.run]: " +
+                                 "Calls {}".format(get_action_name(action)) + " with no parameters")
+
+                        # action_dict[get_action_name(action)]()
                     else:
+
                         log.info("GAME ENGINE [self.run]: " + "Calls {}".format(get_action_name(action)) +
                                  " with parameters {}".format(s[action][1:]))
-                        action_dict[get_action_name(action)](s[action][1:])
+                        actions_for_chat.append(f"GAME ENGINE [self.run]: " + "Calls {}".format(get_action_name(action)) +
+                                 " with parameters {}".format(s[action][1:]))
+                        
+                        # action_dict[get_action_name(action)](s[action][1:])
             log.info("GAME ENGINE [self.run]: Implements the action" +
                      " in the Environment\n\n\n")
+            
+            # Step the environment to update its internal state
+            print("before env.step")
+            
             obs, reward, done, info = env.step(action)
             if get_action_name(action) == 'end_turn':
                 # time_pause(1.5)
                 # end turned press, start clicking until end turn button shows again (game is over)
-                time_pause(3.0)
-                battle_finished = False
-                while not battle_finished:
+                # time_pause(3.0)
+                # battle_finished = False
+                # while not battle_finished:
                     # click event
-                    log.info("TRIVIAL MOUSE ACTION [self.run]: clicking to skip the battle")
-                    gui.click(1780 * dimensions_scale[0], 200 * dimensions_scale[1])  # x, y
+                    # log.info("TRIVIAL MOUSE ACTION [self.run]: clicking to skip the battle")
+                    # gui.click(1780 * dimensions_scale[0], 200 * dimensions_scale[1])  # x, y
 
                     # check if battle is done
-                    if find_paw():
-                        log.info("GAME ENGINE [self.run]: Battle is over")
-                        battle_finished = True
-                    else:
-                        # check if game is over
-                        if find_arena():
-                            time_pause(0.2)
-                            log.info("GAME ENGINE [self.run]: Game is over! Start new game")
-                            gui.click(600 * dimensions_scale[0], 400 * dimensions_scale[1])  # x, y
+                    # if find_paw():
+                    #     log.info("GAME ENGINE [self.run]: Battle is over")
+                    #     battle_finished = True
+                    # else:
+                    #     # check if game is over
+                    #     if find_arena():
+                    #         time_pause(0.2)
+                    #         log.info("GAME ENGINE [self.run]: Game is over! Start new game")
+                    #         gui.click(600 * dimensions_scale[0], 400 * dimensions_scale[1])  # x, y
 
-                gui.click(1780 * dimensions_scale[0], 200 * dimensions_scale[1])  # x, y
+                # gui.click(1780 * dimensions_scale[0], 200 * dimensions_scale[1])  # x, y
                 
                # waits for the turn 3 event, clicking through it
-                time.sleep(2)
+                # time.sleep(2)
            
-                gui.click(1780 * dimensions_scale[0], 200 * dimensions_scale[1])  # x, y
+                # gui.click(1780 * dimensions_scale[0], 200 * dimensions_scale[1])  # x, y
 
                 log.info("Ending turn")
+                
+                # formatted_actions = "\n".join(actions_for_chat)
+                # print(formatted_actions)
+                # response_text, success = generate_response(formatted_actions)
+                
+                # if success:
+                #     # Give the browser a moment to process the message
+                #     time.sleep(0.5)
+                
+                # # Clear the actions for the next turn
+                # actions_for_chat = []
 
         listener.join()
 
