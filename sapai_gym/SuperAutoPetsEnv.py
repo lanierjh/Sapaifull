@@ -145,10 +145,30 @@ class SuperAutoPetsEnv(gym.Env):
         return self.player.wins >= 10 or self.player.lives <= 0 or self.player.turn >= 25
 
     def get_reward(self):
-        assert 0 <= self.player.wins <= 10
-        if self.valid_actions_only:
-            assert self.bad_action_reward_sum == 0
-        return self.player.wins / 10 + self.bad_action_reward_sum
+        base_reward = 0.0
+
+        # Reward winning a battle
+        if hasattr(self.player, "lf_winner"):
+            if self.player.lf_winner:
+                base_reward += 0.2  # tweak this weight as needed
+            else:
+                base_reward -= 0.05  # light penalty on loss
+
+        # Reward reaching new wins (encourage longer games)
+        base_reward += self.player.wins * 0.05
+
+        # Small reward for spending gold (encourage action)
+        gold_spent = 10 - self.player.gold  # max gold = 10
+        base_reward += gold_spent * 0.01
+
+        # Slight reward for team strength (encourage good boards)
+        team_strength = sum([p.pet.attack + p.pet.health for p in self.player.team if not p.empty])
+        base_reward += team_strength * 0.001  # scaled down
+
+        # Apply penalty for invalid actions
+        base_reward += self.bad_action_reward_sum
+
+        return base_reward
 
     def _avail_end_turn(self):
         action_dict = dict()

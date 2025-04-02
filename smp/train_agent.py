@@ -22,7 +22,7 @@ def train_with_masks(ret):
     method for performing agent training
     """
     # initialize environment
-    env = SuperAutoPetsEnv(opponent_generator, valid_actions_only=True)
+    env = SuperAutoPetsEnv(biggest_numbers_horizontal_opp_generator, valid_actions_only=True)
     # eval_env = SuperAutoPetsEnv(opponent_generator, valid_actions_only=True)  # need separate eval env for
     # EvalCallback (this is the wrong env - not working)
 
@@ -65,7 +65,7 @@ def train_with_masks(ret):
     else:
         log.info("Training from scratch...")
         model = MaskablePPO("MlpPolicy", env, verbose=0, batch_size=ret.batch_size, learning_rate=ret.learning_rate,
-                            gamma=ret.gamma)
+                            gamma=ret.gamma, ent_coef=0.01,n_steps=2048)
 
     # train
     log.info("Starting training...")
