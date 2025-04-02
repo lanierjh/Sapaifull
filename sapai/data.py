@@ -8797,6 +8797,22 @@ data = {
             "baseAttack": 1,
             "baseHealth": 1
         },
+        "pet-bee": {
+            "name": "Bee",
+            "id": "pet-bee",
+            "image": {
+                "source": "noto-emoji",
+                "commit": "e022fd6573782431ac9a65b520376b57511c31cd",
+                "unicodeCodePoint": "\ud83d\udc1d"
+            },
+            "packs": [
+                "StandardPack",
+                "ExpansionPack1"
+            ],
+            "tier": "Summoned",
+            "baseAttack": 1,
+            "baseHealth": 1
+        },
         "pet-ram": {
             "name": "Ram",
             "id": "pet-ram",
@@ -8830,6 +8846,38 @@ data = {
         }
     },
     "foods": {
+        "food-bread-crumb": {
+            "name": "Bread Crumb",
+            "id": "food-bread-crumb",
+            "image": {
+                "source": "noto-emoji",
+                "commit": "e022fd6573782431ac9a65b520376b57511c31cd",
+                "unicodeCodePoint": "\ud83c\udf5e"
+            },
+            "tier": 1,
+            "packs": [
+                "StandardPack",
+                "ExpansionPack1"
+            ],
+            "cost": 0,
+            "ability": {
+                "description": "Give one animal +1/+1",
+                "triggeredBy": {
+                    "kind": "Self"
+                },
+                "trigger": "Buy",
+                "effect": {
+                    "kind": "ModifyStats",
+                    "attackAmount": 1,
+                    "healthAmount": 1,
+                    "target": {
+                        "kind": "DifferentPosition",
+                        "n": 1
+                    },
+                    "expectedPets": 1
+                }
+            }
+        },
         "food-apple": {
             "name": "Apple",
             "id": "food-apple",
